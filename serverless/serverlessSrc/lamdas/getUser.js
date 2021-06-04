@@ -17,10 +17,10 @@ exports.handler = async event =>  {
 
     //failed as ID not in the data
     return Responses._400({message: 'no ID in data'})
-}
+};
 
 const data = {
     1234: { name: 'Sourav Tekken', age: 21, job: 'astronaut' },
     5678: { name: 'Ashwin Alaparthi', age: 21, job: 'instagram influencer' },
     9101: { name: 'Ritik Hariani', age: 21, job: 'CEO OpenCookBook' },
-}
+};
