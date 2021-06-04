@@ -9,18 +9,17 @@ import './App.css';
 
 const App = () => {
 
-  return (
+  	return (
     <Provider store={store}>
-      <Router>
-        <Fragment>
-          <Switch>
-            {/* <Route exact path='/' component={Landing} />
-            <Route component={Routes} /> */}
-          </Switch>
-        </Fragment>
-      </Router>
+      	<Router>
+        	<Fragment>
+          		<Switch>
+            
+          		</Switch>
+        	</Fragment>
+      	</Router>
     </Provider>
-  );
+  	);
 };
 
 export default App;
