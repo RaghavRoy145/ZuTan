@@ -16,8 +16,13 @@ const User = new mongoose.Schema({
     },
     username: {
         type: String,
-        unique: true
     },
+    databases: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Database',
+        required: true,
+        default: [],
+    }]
 })
 
 module.exports = mongoose.model('User', User);
