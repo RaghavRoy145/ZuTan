@@ -1,9 +1,9 @@
 const { exec } = require("child_process");
 const { getDb } = require("../db");
 
-const createMongoDb = (id, port) => {
-    return new Promise((resolve, reject) => {
-        exec(`docker container run -p ${port}:27017 --name ${id} -d mongo`, (error, stdout, stderr) => {
+const createMongoDb = async (id, port) => {
+    return new Promise(async (resolve, reject) => {
+        exec(`docker container run -p ${port}:27017 --name ${id} -d mongo`, async(error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 reject(error.message)

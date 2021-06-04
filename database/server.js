@@ -12,7 +12,8 @@ app.use(cors());
 
 //Start Mongo
 db.connectToServer(function (err, _) {
-    if (err) console.log(err);
+    if (err) return console.log(err);
+    console.log("Connected to DB")
 });
 
 let externalPort = 9000;
