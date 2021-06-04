@@ -1,9 +1,26 @@
+import React, { Fragment, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+// Redux
+import { Provider } from 'react-redux';
+import store from './store';
+
 import './App.css';
 
-function App() {
-  	return (
-		<h1 className='text-5xl'>ZuTan</h1>
-  	);
-}
+const App = () => {
+
+  return (
+    <Provider store={store}>
+      <Router>
+        <Fragment>
+          <Switch>
+            {/* <Route exact path='/' component={Landing} />
+            <Route component={Routes} /> */}
+          </Switch>
+        </Fragment>
+      </Router>
+    </Provider>
+  );
+};
 
 export default App;
