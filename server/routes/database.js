@@ -18,11 +18,12 @@ router.post('/create', requireLogin(true), async (req, res) => {
 		const db = new Database({
 			name,
 			type,
+            user: req.id
 		});
 		await db.save();
         const dbs = [db._id, ...user.databases];
         await User.findOneAndUpdate({ _id: req.id }, { databases: dbs });
-        res.status(201).json({ message: 'Database succesfully created!' });
+        res.status(201).json({ message: 'Database succesfully created!', id: db._id });
 	} catch (err) {
 		if (err.name === 'ValidationError') {
 			for (const field in err.errors)
@@ -31,6 +32,32 @@ router.post('/create', requireLogin(true), async (req, res) => {
 		return res.status(500).send('Server Error');
 	}
 });
+
+router.post('/retrieve', requireLogin(true), async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.id })
+            .populate('databases');
+        return res.status(200).json({
+            databases: user.databases
+        })
+    } catch (err) {
+        return res.status(500).send('Server Error');
+    }
+})
+
+router.post('/getDb', requireLogin(true), async (req,  res) => {
+    const {id} = req.body;
+    try {
+        if(!id) return res.status(400).json({message: "Database ID required"});
+        const db = await Database.findById(id);
+        if(db.user != req.id) return res.status(403).json({message: "You do not have permission to view this database"});
+        return res.status(200).json({
+            database: db
+        })
+    } catch(err) {
+        return res.status(500).send('Internal Server Error');
+    }
+})
 
 
 module.exports = router;
