@@ -1,8 +1,9 @@
 const { exec } = require("child_process");
+const { getDb } = require("../db");
 
-const createMongoDb = (id) => {
+const createMongoDb = (id, port) => {
     return new Promise((resolve, reject) => {
-        exec(`docker container run -d mongo`, (error, stdout, stderr) => {
+        exec(`docker container run -p ${port}:27017 --name ${id} -d mongo`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 reject(error.message)
@@ -13,8 +14,17 @@ const createMongoDb = (id) => {
                 reject(error.message)
                 return;
             }
+            const db = await getDb();
+
+            db.collection('databases').updateOne(
+                { id: _id },
+                { $set: { address: `mongodb://34.197.98.169:${port}`, } },
+                function (err, _) {
+                    if (err) return reject(err);
+                }
+            )
             console.log(`stdout: ${stdout}`);
-            resolve(stdout);
+            return resolve(stdout);
         });
     })
 }
