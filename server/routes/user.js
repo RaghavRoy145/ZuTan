@@ -14,7 +14,7 @@ router.get('/', (req, res) => res.send('Test user'));
 // access   Public
 
 router.post('/register', async (req, res) => {
-	const { name, email, username, password, confirmPassword } = req.body;
+	const { name, email, password, confirmPassword } = req.body;
 	try {
 		if(password !== confirmPassword) return res.status(400).json({
 			message: `Passwords don't match`
@@ -23,8 +23,6 @@ router.post('/register', async (req, res) => {
 		if (user) return res.status(400).json({
 			message: 'An account has already been registered with this email. Do you want to login instead?'
 		});
-		user = await User.findOne({ username });
-		if (user) return res.status(400).json({ message: 'Username taken! Try something else.' });
 
 		const salt = await bcrypt.genSalt(10);
 		const hash = await bcrypt.hash(password, salt);
@@ -33,7 +31,6 @@ router.post('/register', async (req, res) => {
 			name,
 			email,
 			password: hash,
-			username: username.toLowerCase(),
 		});
 
 		await user.save();
