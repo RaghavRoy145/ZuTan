@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const db = require('./db');
 const createMongoDb = require('./functions/createMongoDb');
 
 // Set up Express Server
@@ -9,10 +10,19 @@ app.use(express.json());
 //Setup CORS Middleware
 app.use(cors());
 
-app.post('/createMongoDatabase', (req, res) => {
+//Start Mongo
+db.connectToServer(function (err, _) {
+    if (err) return console.log(err);
+    console.log("Connected to DB")
+});
+
+let externalPort = 9000;
+
+app.post('/createMongoDatabase', async (req, res) => {
     try {
         const { id } = req.body;
-        await createMongoDb(id);
+        await createMongoDb(id, externalPort);
+        externalPort += 1;
         return res.status(200).send();
     } catch (err) {
         console.log(err);
@@ -21,5 +31,4 @@ app.post('/createMongoDatabase', (req, res) => {
 });
 
 
-
-// app.listen(5000, () => console.log("Running on port 5000"));
+app.listen(5000, () => console.log("Running on port 5000"));
