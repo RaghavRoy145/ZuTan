@@ -9,6 +9,7 @@ export const loginSuccesful = (user) => {
 }
 
 export const logout = () => {
+    localStorage.removeItem('zutanUser');
     store.dispatch({
         type: LOG_OUT
     })

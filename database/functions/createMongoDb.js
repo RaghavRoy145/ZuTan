@@ -20,7 +20,7 @@ const createMongoDb = async (id, port) => {
 
                 db.collection('databases').updateOne(
                     { _id: ObjectId(id) },
-                    { $set: { address: `mongodb://34.197.98.169:${port}`, } },
+                    { $set: { address: `mongodb://139.59.67.118:${port}`, } },
                     function (err, _) {
                         if (err) return reject(err);
                     }
