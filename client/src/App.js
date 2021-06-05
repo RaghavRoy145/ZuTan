@@ -5,10 +5,13 @@ import { connect } from 'react-redux';
 import client from './utils/client';
 import Alert from './utils/alert';
 
+import AuthenticatedRoute from './AuthenticatedRoute';
 
 import Loading from './components/Layout/Loading';
 import Login from './pages/Login';
 import CreateDatabase from './pages/CreateDatabase';
+import ShowDatabase from './pages/ShowDatabase';
+import ViewDatabases from './pages/ViewDatabases';
 
 
 import {updateLoading, loginSuccesful} from './actions/auth';
@@ -39,11 +42,13 @@ const App = (props) => {
 	if(props.loading) return <Loading/>
 
 	let landingPage = <Route exact path='/' component={Login} />;	
-	if(props.loggedIn) landingPage = <Route exact path='/' component={CreateDatabase} />;
+	if(props.loggedIn) landingPage = <AuthenticatedRoute exact auth path='/' component={ViewDatabases} />;
 	return (
 		<Router>
 			<Switch>
 				{landingPage}
+				<AuthenticatedRoute exact auth path='/createDatabase' component={CreateDatabase} />
+				<AuthenticatedRoute exact auth path='/database/:id' component={ShowDatabase} />
 			</Switch>
 			<Alert></Alert>
 		</Router>

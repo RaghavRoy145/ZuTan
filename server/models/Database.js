@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const User = new mongoose.Schema({
+const Database = new mongoose.Schema({
     type: {
         type: String,
         required: [true, 'Database type is required'],
@@ -9,6 +9,11 @@ const User = new mongoose.Schema({
         type: String,
         required: [true, 'Database name is required'],
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    }
 })
 
 module.exports = mongoose.model('Database', Database);
