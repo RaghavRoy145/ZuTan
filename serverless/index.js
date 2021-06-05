@@ -1,14 +1,7 @@
-const MongoClient = require('mongodb').MongoClient;
-const url = "mongodb+srv://admin:admin123@cluster0.n4ikz.mongodb.net";
-const { ObjectId } = require("bson");
-
-const { connectToDatabase } = require('./db')
-
-const psql_command = require('./psql_command')
+const psql_command = require('./psql_command');
+const { mongoInsert, mongoSelect } = require('./mongo_command');
 
 exports.handler = (event, context, callback) => {
-
-    // TODO implement
     try {
         // console.log(event);
         let body;
@@ -56,7 +49,7 @@ exports.handler = (event, context, callback) => {
                     console.log("Error!")
                     throw err;
                 })
-        } else if (body.type == 'psql_select'){
+        } else if (body.type == 'psql_select') {
             psql_command(body.address, body.port, body.command)
                 .then((res) => {
                     console.log("DONE SQL SELECT!");
@@ -66,7 +59,44 @@ exports.handler = (event, context, callback) => {
                             "Access-Control-Allow-Credentials": true,
                         },
                         statusCode: 200,
-                        body: JSON.stringify({rowCount : res.rowCount, result : res.rows}),
+                        body: JSON.stringify({ rowCount: res.rowCount, result: res.rows }),
+                        isBase64Encoded: false
+                    });
+                })
+                .catch((err) => {
+                    console.log("Error!")
+                    throw err;
+                })
+        } else if (body.type == 'mongo_insert') {
+            mongoInsert(body.address, body.data)
+                .then(() => {
+                    console.log("DONE MONGO INSERT!");
+                    callback(null, {
+                        headers: {
+                            "Access-Control-Allow-Origin": "*",
+                            "Access-Control-Allow-Credentials": true,
+                        },
+                        statusCode: 200,
+                        body: JSON.stringify({ status: "Done" }),
+                        isBase64Encoded: false
+                    });
+                })
+                .catch((err) => {
+                    console.log("Error!")
+                    throw err;
+                })
+        }
+        else if (body.type == 'mongo_select') {
+            mongoSelect(body.address, body.data)
+                .then(() => {
+                    console.log("DONE MONGO INSERT!");
+                    callback(null, {
+                        headers: {
+                            "Access-Control-Allow-Origin": "*",
+                            "Access-Control-Allow-Credentials": true,
+                        },
+                        statusCode: 200,
+                        body: JSON.stringify({ status: "Done" }),
                         isBase64Encoded: false
                     });
                 })
