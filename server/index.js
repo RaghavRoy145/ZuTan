@@ -15,6 +15,9 @@ app.use(express.json());
 app.use('/api/user', require('./routes/user'));
 app.use('/api/database', require('./routes/database'));
 
+app.get('/', (req, res) => {
+    res.send('Zutan is running!');
+})
 
 const PORT = process.env.PORT || 8000;
 
