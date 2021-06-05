@@ -249,7 +249,7 @@ router.post('/select', requireLogin(false), async (req, res) => {
                 'Content-Type': 'application/json'
             };
             const response = await axios.post(queryRoute, data, headers);
-            return res.status(200).json({data: response.data.rows});
+            return res.status(200).json({data: response.data.result});
         } else {
             if(!collection) return res.status(400).json({message: 'Collection required'});
             const queryObject = {
@@ -269,6 +269,72 @@ router.post('/select', requireLogin(false), async (req, res) => {
             };
             const response = await axios.post(queryRoute, data, headers);
             return res.status(200).json({data: response.data.res.cursor.firstBatch});
+        }
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({message: 'Internal server error'});
+    }
+})
+
+const createDeleteSqlQuery = (collection, filter) => {
+    let query = `DELETE FROM ${collection}`;
+    const filterFields = Object.keys(filter);
+    if(filterFields.length) {
+        let filterQuery = '';
+        for(let filterField of filterFields)  {
+            if(filterQuery != '') filterQuery += ' AND ';
+            filterQuery += `${filterField}=`;
+            if(typeof filter[filterField] === 'string')
+                filterQuery += "'" + filter[filterField] + "'";
+            else filterQuery += `${filter[filterField]}`;
+        }
+        query += " WHERE " + filterQuery;
+    }
+    return query + ";";
+}
+
+
+router.post('/delete', requireLogin(false), async (req, res) => {
+    let {collection, id, filter} = req.body;
+    try {
+        const db = await Database.findById(id);
+        if(!db) return res.status(400).json({message: 'Database not found'});
+        if(!filter) filter = {};
+        if(db.type == 'sql') {
+            const table = db.tables.filter(table => table.tableName === collection);
+            if(table.length === 0) return res.status(400).json({message: `Collection ${collection} does not exist`});
+            const check = validateSqlSelect(table[0], [], filter);
+            if(!check.success) return res.status(400).json({message: check.message});
+            const query = createDeleteSqlQuery(collection, filter);
+            console.log(query);
+            const data = {
+                type: "psql_select",
+                address: db.address,
+                port: db.port,
+                command: query
+            }
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            const response = await axios.post(queryRoute, data, headers);
+            return res.status(200).json({message: 'Items succesfully deleted'});
+
+        } else {
+            if(!collection) return res.status(400).json({message: 'Collection required'});
+            const queryObject = {
+                delete: collection,
+                deletes: [{q: filter, limit: 0}],
+            }
+            const data = {
+                type: "mongo_select",
+                address: db.address,
+                data: queryObject
+            }
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            const response = await axios.post(queryRoute, data, headers);
+            return res.status(200).json({message: 'Items succesfully deleted'});
         }
     } catch(err) {
         console.log(err);
