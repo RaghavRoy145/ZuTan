@@ -11,6 +11,7 @@ import Layout from '../components/Layout/Layout';
 import AddTables from './AddTables';
 
 import client from '../utils/client';
+import Documentation from '../components/Documentation';
 
 
 
@@ -28,7 +29,7 @@ const ShowDatabase = (props) => {
 
     const Logos = {
         'mongo': 'https://www.vectorlogo.zone/logos/mongodb/mongodb-ar21.svg',
-        'sql':  'https://www.vectorlogo.zone/logos/postgresql/postgresql-horizontal.svg'
+        'sql': 'https://www.vectorlogo.zone/logos/postgresql/postgresql-horizontal.svg'
     }
 
     useEffect(() => {
@@ -38,7 +39,7 @@ const ShowDatabase = (props) => {
                 'x-auth-token': props.token,
             },
         };
-        client.post('/database/getDb', {id: props.match.params.id}, config)
+        client.post('/database/getDb', { id: props.match.params.id }, config)
             .then(res => {
                 console.log(res.data.database);
                 setDbData(res.data.database);
@@ -49,7 +50,7 @@ const ShowDatabase = (props) => {
     }, []);
 
 
-    if(loading) return <Loading/>
+    if (loading) return <Loading />
     return (
         <Layout id={dbData._id}>
             <React.Fragment>
@@ -57,7 +58,7 @@ const ShowDatabase = (props) => {
                     <p className='flex-grow text-2xl'>{dbData.name}</p>
                     <img src={Logos[dbData.type]} className='h-10'></img>
                 </div>
-                {dbData.type === 'sql' ? <AddTables db={dbData}/>: null}
+                {dbData.type === 'sql' ? <AddTables db={dbData} /> : null}
                 <div className='flex'>
                     {dbData.tables.map((table, index) => {
                         return (
@@ -68,46 +69,46 @@ const ShowDatabase = (props) => {
                             </div>
                         )
                     })}
-
+                    <Documentation id={dbData._id} type={dbData.type}/>
                 </div>
                 <Dialog open={open} onClose={() => setOpen(false)} fullWidth={true}>
                     {dbData.tables.length ?
-                    <React.Fragment>
-                    <DialogTitle>{dbData.tables[currentTable].tableName}</DialogTitle>
-                    <DialogContent>
-                        <table className='w-full mb-6'>
-                            <thead>
-                                <tr>
-                                    <th className='w-52'>Name</th>
-                                    <th className='w-52'>Type</th>
-                                    <th className='w-52'>Primary Key</th>
-                                    <th className='w-52'>Is Null</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {dbData.tables[currentTable].columns.map((col, index) => (
-                                <tr className='w-full'>
-                                    <td className='w-52 text-center'>
-                                        <p>{col.columnName}</p>
-                                    </td>
-                                    <td className='w-52 text-center'>
-                                        <p>{col.columnType}</p>
-                                    </td>
-                                    <td className='w-52 text-center'>
-                                        <div className='flex p-1 mx-auto'>
-                                            <div className='w-4 h-4 border rounded-2xl border border-blue-600 flex flex-col justify-center mx-auto'>
-                                                <div className={`w-3 h-3 rounded-2xl mx-auto ${col.isPrimaryKey  ? 'bg-blue-600': ''}`}></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className='w-52 text-center'><input type="checkbox" disabled value={col.isNotNull}/></td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </DialogContent>
-                    </React.Fragment>
-                    : null}
+                        <React.Fragment>
+                            <DialogTitle>{dbData.tables[currentTable].tableName}</DialogTitle>
+                            <DialogContent>
+                                <table className='w-full mb-6'>
+                                    <thead>
+                                        <tr>
+                                            <th className='w-52'>Name</th>
+                                            <th className='w-52'>Type</th>
+                                            <th className='w-52'>Primary Key</th>
+                                            <th className='w-52'>Is Null</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {dbData.tables[currentTable].columns.map((col, index) => (
+                                            <tr className='w-full'>
+                                                <td className='w-52 text-center'>
+                                                    <p>{col.columnName}</p>
+                                                </td>
+                                                <td className='w-52 text-center'>
+                                                    <p>{col.columnType}</p>
+                                                </td>
+                                                <td className='w-52 text-center'>
+                                                    <div className='flex p-1 mx-auto'>
+                                                        <div className='w-4 h-4 border rounded-2xl border-blue-600 flex flex-col justify-center mx-auto'>
+                                                            <div className={`w-3 h-3 rounded-2xl mx-auto ${col.isPrimaryKey ? 'bg-blue-600' : ''}`}></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className='w-52 text-center'><input type="checkbox" disabled value={col.isNotNull} /></td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </DialogContent>
+                        </React.Fragment>
+                        : null}
                 </Dialog>
             </React.Fragment>
         </Layout>

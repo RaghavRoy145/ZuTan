@@ -152,7 +152,7 @@ const AddTables = ({db, token}) => {
                             </td>
                             <td className='w-52 text-center'>
                                 <div className='flex p-1 mx-auto cursor-pointer' onClick={() => {setPrimaryKey(index)}}>
-                                    <div className='w-4 h-4 border rounded-2xl border border-blue-600 flex flex-col justify-center mx-auto'>
+                                    <div className='w-4 h-4 border rounded-2xl border-blue-600 flex flex-col justify-center mx-auto'>
                                         <div className={`w-3 h-3 rounded-2xl mx-auto ${col.isPrimaryKey  ? 'bg-blue-600': ''}`}></div>
                                     </div>
                                 </div>
