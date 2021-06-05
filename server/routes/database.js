@@ -20,6 +20,8 @@ const spawnServerRoutes = {
 
 const addTableRoute = 'http://34.197.98.169:5000/createTable';
 
+const queryRoute = 'https://adcv4hl85c.execute-api.us-east-1.amazonaws.com/default/zutan';
+
 router.post('/create', requireLogin(true), async (req, res) => {
 	const { name, type } = req.body;
 	try {
@@ -125,11 +127,11 @@ const createInsertSqlQuery = (item, collection) => {
     let valueString = ``;
     for(const value of values) {
         if(valueString != '') valueString += ', ';
-        if(typeof value === 'string') valueString += '"' + value + '"';
+        if(typeof value === 'string') valueString += "'" + value + "'";
         else valueString += `${value}`;
     }
-    let query = format("INSERT INTO %s(%L) VALUES(%s)", collection, keys, valueString);
-    return query;
+    let query = format("INSERT INTO %s(%s) VALUES(%s)", collection, keys, valueString);
+    return query + ";";
 }
 
 router.post('/insert', requireLogin(false), async (req, res) => {
@@ -143,8 +145,18 @@ router.post('/insert', requireLogin(false), async (req, res) => {
             const check = validateSqlInsert(table[0], item);
             if(!check.success) return res.status(400).send({message: check.message});
             const query = createInsertSqlQuery(item, collection);
-            console.log(query);
-            return res.status(200).send();
+
+            const data = {
+                type: "psql_insert",
+                address: db.address,
+                port: db.port,
+                command: query
+            }
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            const response = await axios.post(queryRoute, data, headers);
+            return res.status(200).json({data: response.data});
         } else {
 
         }
@@ -196,7 +208,7 @@ const createSelectSqlQuery = (collection, required, filter) => {
         }
         query += " WHERE " + filterQuery;
     }
-    return query;
+    return query + ";";
 }
 
 router.post('/select', requireLogin(false), async (req, res) => {
@@ -205,14 +217,25 @@ router.post('/select', requireLogin(false), async (req, res) => {
         const db = await Database.findById(id);
         if(!db) return res.status(400).json({message: 'Database not found'});
         if(!required) required = [];
+        if(!filter) filter = {};
         if(db.type === 'sql') {
             const table = db.tables.filter(table => table.tableName === collection);
             if(table.length === 0) return res.status(400).json({message: `Collection ${collection} does not exist`});
             const check = validateSqlSelect(table[0], required, filter);
             if(!check.success) return res.status(400).json({message: check.message});
             const query = createSelectSqlQuery(collection, required, filter);
-            console.log(query);
-            return res.status(200).send();
+
+            const data = {
+                type: "psql_select",
+                address: db.address,
+                port: db.port,
+                command: query
+            }
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            const response = await axios.post(queryRoute, data, headers);
+            return res.status(200).json({data: response.data});
         } else {
 
         }
