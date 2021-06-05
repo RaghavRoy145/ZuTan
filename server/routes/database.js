@@ -163,7 +163,16 @@ router.post('/insert', requireLogin(false), async (req, res) => {
                 insert: collection,
                 documents: [item]
             }
-            console.log(queryObject);
+            const data = {
+                type: "mongo_insert",
+                address: db.address,
+                data: queryObject
+            }
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            const response = await axios.post(queryRoute, data, headers);
+            return res.status(201).json({message: 'Succesfully inserted item!'})
         }
 
     } catch(err) {
@@ -240,7 +249,7 @@ router.post('/select', requireLogin(false), async (req, res) => {
                 'Content-Type': 'application/json'
             };
             const response = await axios.post(queryRoute, data, headers);
-            return res.status(200).json({data: response.data});
+            return res.status(200).json({data: response.data.rows});
         } else {
             if(!collection) return res.status(400).json({message: 'Collection required'});
             const queryObject = {
@@ -249,8 +258,17 @@ router.post('/select', requireLogin(false), async (req, res) => {
             }
             const projection = {};
             for(let requiredItem of required) projecttion[requiredItem] = 1;
-            queryObject[projecttion] = projection;
-            console.log(queryObject);
+            queryObject['projection'] = projection;
+            const data = {
+                type: "mongo_select",
+                address: db.address,
+                data: queryObject
+            }
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            const response = await axios.post(queryRoute, data, headers);
+            return res.status(200).json({data: response.data.res.cursor.firstBatch});
         }
     } catch(err) {
         console.log(err);
