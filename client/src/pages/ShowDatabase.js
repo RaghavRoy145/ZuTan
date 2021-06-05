@@ -51,7 +51,7 @@ const ShowDatabase = (props) => {
 
     if(loading) return <Loading/>
     return (
-        <Layout>
+        <Layout id={dbData._id}>
             <React.Fragment>
                 <div className='flex mt-8'>
                     <p className='flex-grow text-2xl'>{dbData.name}</p>
