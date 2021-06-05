@@ -1,94 +1,111 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import {
+    Dialog, DialogTitle, DialogContent,
+} from '@material-ui/core';
+
+
+import Loading from '../components/Layout/Loading';
 import Layout from '../components/Layout/Layout';
-import { showAlert } from '../utils/alert';
+import AddTables from './AddTables';
+
 import client from '../utils/client';
+
 
 
 const ShowDatabase = (props) => {
 
-    const [URLid, setId] = useState(0)
+    const [currentTable, setCurrentTable] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [dbData, setDbData] = useState({});
+    const [open, setOpen] = useState(false);
 
-    const [numcols, setCols] = useState(0)
-    const [cols, setColsArr] = useState([])
-    const [chosen, setChosen] = useState(false)
-
-
-    const dtypes = [
-        'INT',
-        'STRING',
-        'NUMBER'
-    ]
-
-    const handleChange = (e) => {
-        setCols(e.target.value)
+    const selectTable = (index) => {
+        setCurrentTable(index);
+        setOpen(true);
     }
 
-    const handleSubmit = (e) => {
-        const newArr = []
-        for (let i = 0; i < numcols; i++) {
-
-            newArr.push({
-                colId: i,
-                colname: '',
-                dtype: '',
-                isPrimaryKey: false,
-            })
-        }
-        setColsArr(newArr)
-        setChosen(true)
+    const Logos = {
+        'mongo': 'https://www.vectorlogo.zone/logos/mongodb/mongodb-ar21.svg',
+        'sql':  'https://www.vectorlogo.zone/logos/postgresql/postgresql-horizontal.svg'
     }
 
-    const Update = (e) => {
-        console.log(e.target.name)
-        const updatedArr = cols.map((item, idx) => {
-            console.log(idx, typeof (idx));
-            console.log(e.target.id, typeof (e.target.id), idx == parseInt(e.target.id)); return toString(idx) == e.target.id ? { ...item, [e.target.name]: e.target.value } : item
-        })
-        console.log()
-        console.log(updatedArr)
-        setColsArr(updatedArr)
-    }
-
-    const handleSubmitForm = (e) => {
-        e.preventDefault()
+    useEffect(() => {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
                 'x-auth-token': props.token,
             },
         };
-        setId(props.match.params.id)
-    }
+        client.post('/database/getDb', {id: props.match.params.id}, config)
+            .then(res => {
+                console.log(res.data.database);
+                setDbData(res.data.database);
+                setLoading(false);
+            }).catch(err => {
+                console.log(err);
+            })
+    }, []);
+
+
+    if(loading) return <Loading/>
     return (
         <Layout>
-            { chosen ?
-                <React.Fragment>
-                    <p className='mx-auto text-xl'>Create Table</p>
-                    <form onSubmit={handleSubmitForm} className="bg-darkblue shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                        {cols.map((item, index) => (
-                            <div key={index}>
-                                <input type="text" name={item.colname} id={index} defaultValue={item.colname} placeholder={`column${index + 1}`} onChange={Update} className="shadow appearance-none border rounded mx-4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                                <select name={item.dtype} id={index} onChange={Update} className="shadow appearance-none border rounded mx-4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                                    {dtypes.map((type, i) => (
-                                        <option key={i} value={type}>{type}</option>
-                                    ))}
-                                </select>
-                                <input type="checkbox" value={false} id={index} onChange={Update} />
+            <React.Fragment>
+                <div className='flex mt-8'>
+                    <p className='flex-grow text-2xl'>{dbData.name}</p>
+                    <img src={Logos[dbData.type]} className='h-10'></img>
+                </div>
+                <AddTables db={dbData}/>
+                <div className='flex'>
+                    {dbData.tables.map((table, index) => {
+                        return (
+                            <div className='w-1/4 p-4 mx-2 shadow-md rounded-xl cursor-pointer bg-white text-center'
+                                onClick={() => selectTable(index)}
+                            >
+                                {table.tableName}
                             </div>
-                        ))}
-                        <button type="submit" className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Create</button>
-                    </form>
-                </React.Fragment> :
-                <React.Fragment>
-                    <form className="bg-darkblue shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                        <label>Enter number of Columns</label><br />
-                        <input type="number" name="numcols" onChange={handleChange} /> <br />
-                        <button type="submit" onClick={handleSubmit} className="mx-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
-                    </form>
-                </React.Fragment>
-            }
+                        )
+                    })}
+
+                </div>
+                <Dialog open={open} onClose={() => setOpen(false)} fullWidth={true}>
+                    <DialogTitle>{dbData.tables[currentTable].tableName}</DialogTitle>
+                    <DialogContent>
+                        <table className='w-full mb-6'>
+                            <thead>
+                                <tr>
+                                    <th className='w-52'>Name</th>
+                                    <th className='w-52'>Type</th>
+                                    <th className='w-52'>Primary Key</th>
+                                    <th className='w-52'>Is Null</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {dbData.tables[currentTable].columns.map((col, index) => (
+                                <tr className='w-full'>
+                                    <td className='w-52 text-center'>
+                                        <p>{col.columnName}</p>
+                                    </td>
+                                    <td className='w-52 text-center'>
+                                        <p>{col.columnType}</p>
+                                    </td>
+                                    <td className='w-52 text-center'>
+                                        <div className='flex p-1 mx-auto'>
+                                            <div className='w-4 h-4 border rounded-2xl border border-blue-600 flex flex-col justify-center mx-auto'>
+                                                <div className={`w-3 h-3 rounded-2xl mx-auto ${col.isPrimaryKey  ? 'bg-blue-600': ''}`}></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className='w-52 text-center'><input type="checkbox" disabled value={col.isNotNull}/></td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </DialogContent>
+                </Dialog>
+            </React.Fragment>
         </Layout>
     )
 }

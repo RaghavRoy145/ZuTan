@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
+import { useHistory } from "react-router-dom";
+
 import client from '../utils/client';
 import Loading from '../components/Layout/Loading';
 
@@ -11,8 +13,11 @@ const Logos = {
 }
 
 const DbItem = ({ db }) => {
+    const history = useHistory();
     return (
-        <div className='w-full rounded shadow-xl border-black p-4 mt-6 bg-white flex'>
+        <div className='w-full rounded shadow-xl border-black p-4 mt-6 bg-white flex cursor-pointer'
+            onClick={() => {history.push(`/database/${db._id}`)}}
+        >
             <p className='text-xl flex-grow'>{db.name}</p>
             <img src={Logos[db.type]} className='h-10'></img>
         </div>
@@ -39,13 +44,6 @@ const ViewDatabases = (props) => {
             }).catch(err => {
                 console.log(err);
             })
-
-        // client.post('/database/getDb', {id: '60ba68ea8c84e182e230d1f7'}, config)
-        //     .then(res => {
-        //         console.log(res.data.database);
-        //     }).catch(err => {
-        //         console.log(err);
-        //     })
     }, []);
     if(loading) return <Loading/>
     return (
