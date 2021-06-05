@@ -18,8 +18,10 @@ db.connectToServer(function (err, _) {
     console.log("Connected to DB")
 });
 
+// This port number will be incremented each time a database is spawned and used as the Port number for that new DB Instance
 let externalPort = 9000;
 
+// REST API Route to create a new mongo DB. Takes the DB ID as input and calls the createMongoDb Function
 app.post('/createMongoDatabase', async (req, res) => {
     try {
         const { id } = req.body;
@@ -32,6 +34,7 @@ app.post('/createMongoDatabase', async (req, res) => {
     }
 });
 
+// REST API Route to create a new Postgres DB. Takes the DB ID as input and calls the createPostgres Function
 app.post('/createPostgresDatabase', async (req, res) => {
     try {
         const { id } = req.body;
@@ -55,5 +58,5 @@ app.post('/createTable', async (req, res) => {
     }
 });
 
-
+// Run the server and listen to new requests on port 5000
 app.listen(5000, () => console.log("Running on port 5000"));

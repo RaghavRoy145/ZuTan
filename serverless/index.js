@@ -8,29 +8,9 @@ exports.handler = (event, context, callback) => {
         if (event.body) {
             body = JSON.parse(event.body);
         }
-        // console.log(`The ID is ${event.queryStringParameters?.id}`);
-        // return { statusCode: 200, body: JSON.stringify({ id : event.queryStringParameters?.id }) };
-        // connectToDatabase().then((c) => {
-        //     let client = c.db('ZuTan');
-        //     console.log("Mongo has connected")
-        //     client.collection('databases').find({ _id: ObjectId(String(event.queryStringParameters.id)) }).toArray((err, data) => {
-        //         if (err) {
-        //             console.log(err);
-        //             callback(Error(err))
-        //         };
-        //         console.log(`Mongo has fetched documents\n ${data}`)
-        //         callback(null, {
-        //             headers: {
-        //                 "Access-Control-Allow-Origin": "*",
-        //                 "Access-Control-Allow-Credentials": true,
-        //             },
-        //             statusCode: 200,
-        //             body: JSON.stringify(data),
-        //             isBase64Encoded: false
-        //         });
-        //     });
-        // }).catch((err) => { throw err });
-        // console.log(body, body.type == 'psql_insert', body.type == "psql_insert", body.type === "psql_insert");
+
+        // IF conditions to run database query based on type of query
+
         if (body.type == 'psql_insert') {
             psql_command(body.address, body.port, body.command)
                 .then(() => {
