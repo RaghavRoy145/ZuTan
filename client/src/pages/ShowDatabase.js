@@ -71,6 +71,8 @@ const ShowDatabase = (props) => {
 
                 </div>
                 <Dialog open={open} onClose={() => setOpen(false)} fullWidth={true}>
+                    {dbData.tables.length ?
+                    <React.Fragment>
                     <DialogTitle>{dbData.tables[currentTable].tableName}</DialogTitle>
                     <DialogContent>
                         <table className='w-full mb-6'>
@@ -104,6 +106,8 @@ const ShowDatabase = (props) => {
                             </tbody>
                         </table>
                     </DialogContent>
+                    </React.Fragment>
+                    : null}
                 </Dialog>
             </React.Fragment>
         </Layout>
