@@ -32,6 +32,8 @@ const CreateDatabase = (props) => {
                 setTimeout(() => {
                     console.log();
                     history.push(`/database/${res.data.id}`);
+                    // history.push('/database')
+                    // history.push('/')
                 }, 1500);
             }).catch(err => {
                 if(err.response) showAlert(err.response.data.message, 'error');

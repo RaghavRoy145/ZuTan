@@ -10,6 +10,7 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 import Loading from './components/Layout/Loading';
 import Login from './pages/Login';
 import CreateDatabase from './pages/CreateDatabase';
+import ShowDatabase from './pages/ShowDatabase';
 import ViewDatabases from './pages/ViewDatabases';
 
 
@@ -47,6 +48,7 @@ const App = (props) => {
 			<Switch>
 				{landingPage}
 				<AuthenticatedRoute exact auth path='/createDatabase' component={CreateDatabase} />
+				<AuthenticatedRoute exact auth path='/database/:id' component={ShowDatabase} />
 			</Switch>
 			<Alert></Alert>
 		</Router>
