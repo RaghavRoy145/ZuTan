@@ -20,7 +20,7 @@ const AddBeds = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const url = 'http://zutan.herokuapp.com/api/database/insert';
+        const url = 'https://zutan.herokuapp.com/api/database/insert';
         const content = {
             id: '60bbe1a6a0403e002158aa6a',
             collection: 'covid',

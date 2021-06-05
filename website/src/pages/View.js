@@ -8,7 +8,7 @@ const View = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const url = 'http://zutan.herokuapp.com/api/database/select';
+        const url = 'https://zutan.herokuapp.com/api/database/select';
         const data = {
             id: '60bbe1a6a0403e002158aa6a',
             collection: 'covid'
