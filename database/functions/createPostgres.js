@@ -1,5 +1,6 @@
 const { exec } = require("child_process");
 const { getDb } = require("../db");
+const { ObjectId } = require("bson");
 
 const createPostgres = async (id, port) => {
     return new Promise(async (resolve, reject) => {
@@ -18,7 +19,7 @@ const createPostgres = async (id, port) => {
                 const db = await getDb();
 
                 db.collection('databases').updateOne(
-                    { _id: id },
+                    { _id: ObjectId(id) },
                     { $set: { address: `34.197.98.169`, port } },
                     function (err, _) {
                         if (err) return reject(err);
