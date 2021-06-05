@@ -14,11 +14,11 @@ router.get('/', (req, res) => res.send('Test user'));
 // access   Private
 
 const spawnServerRoutes = {
-    'sql': 'http://34.197.98.169:5000/createPostgresDatabase',
-    'mongo': 'http://34.197.98.169:5000/createMongoDatabase'
+    'sql': 'http://139.59.67.118:5000/createPostgresDatabase',
+    'mongo': 'http://139.59.67.118:5000/createMongoDatabase'
 }
 
-const addTableRoute = 'http://34.197.98.169:5000/createTable';
+const addTableRoute = 'http://139.59.67.118:5000/createTable';
 
 const queryRoute = 'https://adcv4hl85c.execute-api.us-east-1.amazonaws.com/default/zutan';
 
@@ -158,7 +158,12 @@ router.post('/insert', requireLogin(false), async (req, res) => {
             const response = await axios.post(queryRoute, data, headers);
             return res.status(200).json({data: response.data});
         } else {
-
+            if(!collection) return res.status(400).json({message: 'Collection required'});
+            const queryObject = {
+                insert: collection,
+                documents: [item]
+            }
+            console.log(queryObject);
         }
 
     } catch(err) {
@@ -237,7 +242,15 @@ router.post('/select', requireLogin(false), async (req, res) => {
             const response = await axios.post(queryRoute, data, headers);
             return res.status(200).json({data: response.data});
         } else {
-
+            if(!collection) return res.status(400).json({message: 'Collection required'});
+            const queryObject = {
+                find: collection,
+                filter,
+            }
+            const projection = {};
+            for(let requiredItem of required) projecttion[requiredItem] = 1;
+            queryObject[projecttion] = projection;
+            console.log(queryObject);
         }
     } catch(err) {
         console.log(err);
