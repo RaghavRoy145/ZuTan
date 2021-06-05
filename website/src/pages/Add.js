@@ -39,7 +39,7 @@ const AddBeds = () => {
     }
     return (
         <React.Fragment>
-        <div className="flex flex-col mx-auto">
+        <div className="flex flex-col mx-auto font-mono">
             <div className="content-start mt-6 ml-6">
                 <Link to='/'>
                     <button className="bg-green-400 text-white active:bg-lightBlue-600 font-bold uppercase text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">
@@ -48,7 +48,7 @@ const AddBeds = () => {
                 </Link>
             </div>
             <div className="flex-grow content-end">
-                <p className="text-center text-xl"><button className="bg-green-300 rounded px-8 py-3 mb-6" onClick={handleClick}>Add Data</button></p>
+                <p className="text-center text-xl text-white font-bold"><button className="bg-green-300 rounded px-8 py-3 mb-6" onClick={handleClick}>Add Data</button></p>
             </div>
                 
                 { add ? 
@@ -66,11 +66,11 @@ const AddBeds = () => {
                             <label className="mt-2 block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                                 City
                             </label>
-                            <input type="text" name="city" value={data.city} onChange={handleChange} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"/>
+                            <input required type="text" name="city" value={data.city} onChange={handleChange} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"/>
                             <label className="mt-2 block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                                 Info
                             </label>
-                            <input type="text" name="info" value={data.info} onChange={handleChange} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"/>
+                            <input required type="text" name="info" value={data.info} onChange={handleChange} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"/>
                             <button type="submit" className="mt-4 bg-green-400 text-white active:bg-lightBlue-600 font-bold uppercase text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
                                 Submit
                             </button>
@@ -79,20 +79,20 @@ const AddBeds = () => {
                     : <React.Fragment>
                         {columns.length ? 
                         
-                        <table className="bg-green-100 table-fixed border shadow text-center outline w-4/5 mx-auto" >
+                        <table className="bg-green-50 table-fixed border shadow-lg outline w-4/5 mx-auto" >
                             <tr>
-                                <th className="w-1/4">Resource</th>
-                                <th className="w-1/4">City</th>
-                                <th className="w-1/2">Information</th>
+                                <th className="w-1/4 bg-blue-100 border text-left px-8 py-4">Resource</th>
+                                <th className="w-1/4 bg-blue-100 border text-left px-8 py-4">City</th>
+                                <th className="w-1/2 bg-blue-100 border text-left px-8 py-4">Information</th>
                             </tr> 
                             {columns.map((item, idx) => (
                                 <tr key={idx}>
-                                    <td>{item.resource}</td>
-                                    <td>{item.city}</td>
-                                    <td>{item.info}</td>
+                                    <td className="border px-8 py-4">{item.resource}</td>
+                                    <td className="border px-8 py-4">{item.city}</td>
+                                    <td className="border px-8 py-4">{item.info}</td>
                                 </tr>
                             ))}
-                        </table> : <div> No info</div>}
+                        </table> : <div className="text-center text-2xl"> <h1>No info </h1></div>}
                     </React.Fragment>}
         </div>
         </React.Fragment>
