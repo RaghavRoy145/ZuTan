@@ -8,9 +8,12 @@ const mongoInsert = (address, data) => {
             const uri = `${address}/Zutan`;
             const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
             let db = client.db('ZuTan');
-            await db.runCommand(data);
-            client.close(() => console.log("DB Closed"));
-            resolve();
+            db.command(data, (err, res) => {
+                if (err) throw err;
+                console.log(res);
+                client.close(() => console.log("DB Closed"));
+                resolve(res);
+            });
         } catch (err) {
             console.log(err);
             reject(err);
@@ -24,10 +27,12 @@ const mongoSelect = (address, data) => {
             const uri = `${address}/Zutan`;
             const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
             let db = client.db('ZuTan');
-            const res = await db.runCommand(data);
-            console.log(res);
-            client.close(() => console.log("DB Closed"));
-            resolve();
+            db.command(data, (err, res) => {
+                if (err) throw err;
+                console.log(res);
+                client.close(() => console.log("DB Closed"));
+                resolve(res);
+            });
         } catch (err) {
             console.log(err);
             reject(err);
