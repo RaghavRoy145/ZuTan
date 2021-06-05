@@ -119,3 +119,4 @@ dist
 serverless/myarchive.zip
 
 .DS_Store
+build
