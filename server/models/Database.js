@@ -44,7 +44,9 @@ const Database = new mongoose.Schema({
         }],
         require: true,
         default: []
-    }
+    },
+    address: String,
+    port: Number,
 })
 
 module.exports = mongoose.model('Database', Database);

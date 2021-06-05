@@ -51,13 +51,13 @@ const ShowDatabase = (props) => {
 
     if(loading) return <Loading/>
     return (
-        <Layout>
+        <Layout id={dbData._id}>
             <React.Fragment>
                 <div className='flex mt-8'>
                     <p className='flex-grow text-2xl'>{dbData.name}</p>
                     <img src={Logos[dbData.type]} className='h-10'></img>
                 </div>
-                <AddTables db={dbData}/>
+                {dbData.type === 'sql' ? <AddTables db={dbData}/>: null}
                 <div className='flex'>
                     {dbData.tables.map((table, index) => {
                         return (
