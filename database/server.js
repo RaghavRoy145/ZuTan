@@ -3,6 +3,7 @@ const cors = require('cors');
 const db = require('./db');
 const createMongoDb = require('./functions/createMongoDb');
 const createPostgres = require('./functions/createPostgres');
+const createPostgresTable = require('./functions/createPostgresTable');
 
 // Set up Express Server
 const app = express();
@@ -36,6 +37,17 @@ app.post('/createPostgresDatabase', async (req, res) => {
         const { id } = req.body;
         await createPostgres(id, externalPort);
         externalPort += 1;
+        return res.status(200).send();
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send("Internal Error");
+    }
+});
+
+app.post('/createTable', async (req, res) => {
+    try {
+        const { databaseId, tableDetails } = req.body;
+        await createPostgresTable(databaseId, tableDetails);
         return res.status(200).send();
     } catch (err) {
         console.log(err);
