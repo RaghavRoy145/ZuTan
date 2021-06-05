@@ -9,6 +9,7 @@ const createPostgresTable = async (databaseId, tableDetails) => {
             const db = await getDb();
             db.collection('databases').find({ _id: ObjectId(databaseId) }).toArray((err, data) => {
                 if(err) throw err;
+                console.log(data);
                 const port = data[0].port;
                 const client = new Client({
                     user : "postgres",
