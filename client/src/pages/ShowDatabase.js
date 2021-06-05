@@ -69,8 +69,8 @@ const ShowDatabase = (props) => {
                             </div>
                         )
                     })}
-                    <Documentation id={dbData._id} type={dbData.type}/>
                 </div>
+                <Documentation id={dbData._id} type={dbData.type}/>
                 <Dialog open={open} onClose={() => setOpen(false)} fullWidth={true}>
                     {dbData.tables.length ?
                         <React.Fragment>
