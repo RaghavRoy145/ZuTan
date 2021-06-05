@@ -59,5 +59,23 @@ router.post('/getDb', requireLogin(true), async (req,  res) => {
     }
 })
 
+router.post('/addTable', requireLogin(true), async (req, res) => {
+    const {table, id} = req.body;
+    try {
+        const db = await Database.findById(id);
+        if(!db) return res.status(400).json({message: "Please provide a valid db id"});
+        const tables = db.tables;
+        tables.push(table);
+        await Database.findOneAndUpdate({ _id: id }, { tables });
+        return res.status(201).json({message: "Succesfully added table"});
+    } catch(err) {
+        if (err.name === 'ValidationError') {
+			for (const field in err.errors)
+				return res.status(400).json({ message: err.errors[field].properties.message });
+		}
+		return res.status(500).send('Server Error');
+    }
+})
+
 
 module.exports = router;
