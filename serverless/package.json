@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "mongodb": "^3.6.9",
-    "npm": "^7.16.0"
+    "npm": "^7.16.0",
+    "pg": "^8.6.0"
   }
 }
