@@ -88,7 +88,7 @@ exports.handler = (event, context, callback) => {
         }
         else if (body.type == 'mongo_select') {
             mongoSelect(body.address, body.data)
-                .then(() => {
+                .then((res) => {
                     console.log("DONE MONGO INSERT!");
                     callback(null, {
                         headers: {
@@ -96,7 +96,7 @@ exports.handler = (event, context, callback) => {
                             "Access-Control-Allow-Credentials": true,
                         },
                         statusCode: 200,
-                        body: JSON.stringify({ status: "Done" }),
+                        body: JSON.stringify({ res }),
                         isBase64Encoded: false
                     });
                 })
