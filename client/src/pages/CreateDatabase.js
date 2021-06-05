@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import { useHistory } from "react-router-dom";
 
 import Layout from '../components/Layout/Layout';
+import Loading from '../components/Layout/Loading';
 
 import { showAlert } from '../utils/alert';
 import client from '../utils/client';
@@ -11,6 +12,7 @@ const CreateDatabase = (props) => {
     const history = useHistory();
     const [dbName, setDbName] = useState('');
     const [dbType, setDbType] = useState('mongo');
+    const [loading, setLoading] = useState(false);
 
     const handleCreateDb = () => {
         if(!dbName) return showAlert('DB Name required', 'warning');
@@ -25,15 +27,14 @@ const CreateDatabase = (props) => {
             name: dbName,
             type: dbType
         };
+        setLoading(true);
         client.post('/database/create', data, config)
             .then(res => {
                 showAlert('Database succesfully created', 'success');
                 console.log(res);
                 setTimeout(() => {
-                    console.log();
+                    setLoading(false);
                     history.push(`/database/${res.data.id}`);
-                    // history.push('/database')
-                    // history.push('/')
                 }, 1500);
             }).catch(err => {
                 if(err.response) showAlert(err.response.data.message, 'error');
@@ -48,7 +49,7 @@ const CreateDatabase = (props) => {
         type: 'sql',
         image: 'https://www.vectorlogo.zone/logos/postgresql/postgresql-horizontal.svg'
     }]
-
+    if(loading) return <Loading text='Creating database'/>
     return (
         <Layout>
             <div className='mt-12'>

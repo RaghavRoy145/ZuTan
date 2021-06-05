@@ -2,6 +2,7 @@ const express = require('express');
 const { requireLogin } = require('../middleware/auth');
 const User = require('../models/User');
 const Database = require('../models/Database');
+const axios = require('axios');
 
 const router = express.Router();
 
@@ -10,6 +11,13 @@ router.get('/', (req, res) => res.send('Test user'));
 // @route   POST /api/database/create
 // @desc    Creates a database instance
 // access   Private
+
+const spawnServerRoutes = {
+    'sql': 'http://34.197.98.169:5000/createPostgresDatabase',
+    'mongo': 'http://34.197.98.169:5000/createMongoDatabase'
+}
+
+const addTableRoute = 'http://34.197.98.169:5000/createTable';
 
 router.post('/create', requireLogin(true), async (req, res) => {
 	const { name, type } = req.body;
@@ -21,6 +29,7 @@ router.post('/create', requireLogin(true), async (req, res) => {
             user: req.id
 		});
 		await db.save();
+        const response = await axios.post(spawnServerRoutes[type], {id: db._id}, {});
         const dbs = [db._id, ...user.databases];
         await User.findOneAndUpdate({ _id: req.id }, { databases: dbs });
         res.status(201).json({ message: 'Database succesfully created!', id: db._id });
@@ -29,7 +38,8 @@ router.post('/create', requireLogin(true), async (req, res) => {
 			for (const field in err.errors)
 				return res.status(400).json({ message: err.errors[field].properties.message });
 		}
-		return res.status(500).send('Server Error');
+        console.log(err);
+		return res.status(500).json({message: 'Server Error'});
 	}
 });
 
@@ -41,7 +51,7 @@ router.post('/retrieve', requireLogin(true), async (req, res) => {
             databases: user.databases
         })
     } catch (err) {
-        return res.status(500).send('Server Error');
+        return res.status(500).json({message: 'Server Error'});
     }
 })
 
@@ -55,25 +65,31 @@ router.post('/getDb', requireLogin(true), async (req,  res) => {
             database: db
         })
     } catch(err) {
-        return res.status(500).send('Internal Server Error');
+        return res.status(500).json({message: 'Server Error'});
     }
 })
 
 router.post('/addTable', requireLogin(true), async (req, res) => {
     const {table, id} = req.body;
     try {
+        const data = {
+            databaseId: id,
+            tableDetails: table
+        };
         const db = await Database.findById(id);
         if(!db) return res.status(400).json({message: "Please provide a valid db id"});
+        const response = await axios.post(addTableRoute, data, {});
         const tables = db.tables;
         tables.push(table);
         await Database.findOneAndUpdate({ _id: id }, { tables });
         return res.status(201).json({message: "Succesfully added table"});
     } catch(err) {
+        console.log(err);
         if (err.name === 'ValidationError') {
 			for (const field in err.errors)
 				return res.status(400).json({ message: err.errors[field].properties.message });
 		}
-		return res.status(500).send('Server Error');
+		return res.status(500).json({message: 'Server Error'});
     }
 })
 
