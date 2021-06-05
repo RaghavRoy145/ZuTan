@@ -1,0 +1,21 @@
+{
+  "name": "zutan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd server && npm install",
+    "start": "cd server && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RaghavRoy145/VMware-Hackathon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RaghavRoy145/VMware-Hackathon/issues"
+  },
+  "homepage": "https://github.com/RaghavRoy145/VMware-Hackathon#readme"
+}
