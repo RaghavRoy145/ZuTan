@@ -125,7 +125,7 @@ const AddTables = ({db, token}) => {
                             <th className='w-52'>Name</th>
                             <th className='w-52'>Type</th>
                             <th className='w-52'>Primary Key</th>
-                            <th className='w-52'>Is Null</th>
+                            <th className='w-52'>Is Not Null</th>
                             <th className='w-8'></th>
                         </tr>
                     </thead>
