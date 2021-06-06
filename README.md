@@ -10,6 +10,11 @@ Team Zutan - Project repository
 4. Serverless - Functions that are run on AWS Lambda that executes queries on the selected Database
 5. Website - Covid19 example that uses our Zutan - Database service for database functionalities
 
+## Files
+
+1. VM-Ware Hackathon idea.pdf
+2. VM-Ware Hackathon Final.pdf
+
 ## Deployed sites
 
 1. https://zutan.netlify.app (Client)
