@@ -12,14 +12,18 @@ Team Zutan - Project repository
 
 ## Files
 
-1. VM-Ware Hackathon idea.pdf
-2. VM-Ware Hackathon Final.pdf
+1. VMWare Hackathon Idea.pdf
+2. VMWare Hackathon Final.pdf
 3. videolink.txt (Drive link to folder that has video for final presentation and demo)
 ## Deployed sites
 
 1. https://zutan.netlify.app (Client)
 2. https://zutan-sample.netlify.app  (Example website used to demonstrate platform)
 3. https://zutan.herokuapp.com/api/database  (API endpoint)
+
+## Drive Link to video
+
+https://drive.google.com/drive/folders/169hlzyosNX1IJAdMBxbc-mRZ2zkqtQEH?usp=sharing
 
 ## Team Members
 
